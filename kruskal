@@ -1,0 +1,58 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#define INF 10000
+using namespace std;
+
+struct Edge{
+	int a;
+	int b;
+	int weight;
+}edge[INF];
+
+int par[INF];
+int r[INF];
+int vnum, rnum;
+int sum;
+
+void init(int n){
+	for (int i = 0; i < n; i++){
+		par[i] = i;
+		r[i] = 0;
+	}
+}
+int find(int x) {
+	if (x == par[x])return x;
+	else return par[x] = find(par[x]);
+}
+int unite(int x, int y){
+	x = find(x);
+	y = find(y);
+	if (x == y) return 0;
+	else{
+		if (r[x] < r[y])par[x] = y;
+		else{
+			par[y] = x;
+			if (r[x] == r[y])r[x]++;
+		}
+		return 1;
+	}
+}
+bool compare(const Edge& a, const Edge& b) {
+	return a.weight < b.weight;
+}
+
+int main()
+{
+	sum = 0;
+	cin >>vnum>> rnum;
+	init(vnum);
+	for (int i = 0; i < rnum; i++) cin >> edge[i].a >> edge[i].b >> edge[i].weight;
+	sort(edge, edge + rnum, compare);
+	for (int j = 0; j < rnum; j++) {
+		if (unite(edge[j].a, edge[j].b)){
+			sum += edge[j].weight;
+			cout << edge[j].a << "=>" << edge[j].b << endl;
+		}
+	}
+	return 0;
