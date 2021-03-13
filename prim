@@ -1,0 +1,58 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#define INF 1e10
+using namespace std;
+
+int graph[100][100];
+int vis[100];
+int road[100];
+int weight[100];
+int vnum, rnum;
+int weightsum, first;
+int h, d, w;
+
+void prim(int first) {
+	memset(vis, 0, sizeof vis);
+	vis[first] = 1;
+	for (int i = 0; i < vnum; i++) {
+		weight[i] = graph[first][i];
+		road[i] = first;
+	}
+	weightsum = 0;
+	int minw, minnum;
+	for (int i = 1; i < vnum; i++) {
+		minw = INF;
+		for (int j = 0; j < vnum; j++) {
+			if (vis[j] != 1 && weight[j] < minw) {
+				minw = weight[j];
+				minnum = j;
+			}
+		}
+		vis[minnum] = 1;
+		weightsum += minw;
+		for (int j = 0; j < vnum; j++) {
+			if (vis[j] == false && graph[minnum][j] < weight[j]) {
+				weight[j] = graph[minnum][j];
+				road[j] = minnum;
+			}
+		}
+	}
+}
+
+int main() {
+	cin >> vnum >> rnum;
+	for (int i = 0; i < vnum; i++)
+		for (int j = 0; j < vnum; j++)
+			graph[i][j] = INF;
+	for (int i = 0; i < rnum; i++) {
+		cin >> h >> d >> w;
+		graph[h][d] = w;
+		graph[d][h] = w;
+	}
+	cin >> first;
+	prim(first);
+	for (int i = 0; i < vnum; i++)
+		if (i != first)cout << i << "->" << road[i] << endl;
+	return 0;
+}
